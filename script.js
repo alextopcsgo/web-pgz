@@ -74,15 +74,133 @@ document.addEventListener('DOMContentLoaded', function() {
     const toCurrency = document.getElementById('toCurrency');
     const amount = document.getElementById('amount');
     const result = document.getElementById('result');
-    const chart = document.getElementById('chart');
-    const chartInfo = document.getElementById('chartInfo');
+    
+    const chartCanvas = document.getElementById('rateChart');  
+    const clickInfo = document.getElementById('clickInfo');    
+    
+    const historyData = [
+        { date: "29.04", price: 7.90 }, { date: "30.04", price: 7.87 },
+        { date: "01.05", price: 7.85 }, { date: "02.05", price: 7.87 },
+        { date: "03.05", price: 7.91 }, { date: "04.05", price: 7.90 },
+        { date: "05.05", price: 7.94 }, { date: "06.05", price: 7.93 },
+        { date: "07.05", price: 7.95 }, { date: "08.05", price: 7.96 },
+        { date: "09.05", price: 8.03 }, { date: "10.05", price: 8.03 },
+        { date: "11.05", price: 8.02 }, { date: "12.05", price: 7.96 },
+        { date: "13.05", price: 8.03 }, { date: "14.05", price: 8.02 },
+        { date: "15.05", price: 7.96 }, { date: "16.05", price: 7.93 },
+        { date: "17.05", price: 7.89 }, { date: "18.05", price: 7.84 },
+        { date: "19.05", price: 7.82 }, { date: "20.05", price: 7.83 },
+        { date: "21.05", price: 7.74 }, { date: "22.05", price: 7.64 },
+        { date: "23.05", price: 7.61 }, { date: "24.05", price: 7.62 },
+        { date: "25.05", price: 7.67 }, { date: "26.05", price: 7.71 },
+        { date: "27.05", price: 7.75 }, { date: "28.05", price: 7.67 },
+        { date: "29.05", price: 7.71 }
+    ];
+    
+    function buildChart() {
+        if (!chartCanvas) return;
+        
+        const labels = historyData.map(item => item.date);
+        const prices = historyData.map(item => item.price);
+        
+        if (window.rateChartInstance) {
+            window.rateChartInstance.destroy();
+        }
+        
+        window.rateChartInstance = new Chart(chartCanvas.getContext('2d'), {
+            type: 'line', 
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Курс TJS/RUB',
+                    data: prices,
+                    borderColor: 'rgba(0, 77, 128, 1)', 
+                    backgroundColor: 'rgba(0, 77, 128, 0.1)', 
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3, 
+                    pointRadius: 4, 
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: 'rgba(0, 77, 128, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Курс: ' + context.parsed.y.toFixed(4) + ' RUB';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        display: true,
+                        beginAtZero: false,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        title: { display: true, text: 'RUB' }
+                    },
+                    x: {
+                        display: true,
+                        grid: { display: false },
+                        ticks: {
+                            autoSkip: true,
+                            maxRotation: 45,
+                            minRotation: 45,
+                            maxTicksLimit: 10
+                        },
+                        title: { display: true, text: 'Дата' }
+                    }
+                },
+                onClick: (event, activeElements) => {
+                    if (activeElements.length === 0) return;
+                    const index = activeElements[0].index;
+                    const item = historyData[index];
+                    const inverse = (1 / item.price).toFixed(4);
+                    
+                    if (clickInfo) {
+                        clickInfo.innerHTML = 
+                            `<strong>Дата:</strong> ${item.date}.2026<br>` +
+                            `<strong>1 TJS =</strong> ${item.price.toFixed(4)} RUB<br>` +
+                            `<strong>1 RUB =</strong> ${inverse} TJS`;
+                    }
+                }
+            }
+        });
+        
+        if (clickInfo && historyData.length > 0) {
+            const last = historyData[historyData.length - 1];
+            const inverse = (1 / last.price).toFixed(4);
+            clickInfo.innerHTML = 
+                `<strong>Дата:</strong> ${last.date}.2026<br>` +
+                `<strong>1 TJS =</strong> ${last.price.toFixed(4)} RUB<br>` +
+                `<strong>1 RUB =</strong> ${inverse} TJS`;
+        }
+    }
+    
+    buildChart();
     
     function convertCurrency() {
         if (!fromCurrency || !toCurrency || !amount || !result) return;
         const from = fromCurrency.value;
         const to = toCurrency.value;
         let amt = parseFloat(amount.value) || 0;
-        const converted = fx(amt).from(from).to(to);
+        
+        let converted;
+        if (typeof fx !== 'undefined' && fx.rates) {
+            converted = fx(amt).from(from).to(to);
+        } else {
+            const rate = 7.71;
+            converted = (from === 'TJS' && to === 'RUB') ? amt * rate : 
+                       (from === 'RUB' && to === 'TJS') ? amt / rate : amt;
+        }
         result.textContent = `${amt.toFixed(2)} ${from} = ${converted.toFixed(2)} ${to}`;
     }
     
@@ -104,72 +222,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (fromCurrency) fromCurrency.addEventListener('change', convertCurrency);
     if (toCurrency) toCurrency.addEventListener('change', convertCurrency);
-    
     if (amount) {
         amount.addEventListener('input', function() {
-            if (this.value.startsWith('-') || parseFloat(this.value) < 0) {
-                this.value = 0;
-            }
+            if (this.value.startsWith('-') || parseFloat(this.value) < 0) this.value = 0;
             convertCurrency();
         });
     }
-    
-    if (chart) {
-        loadChartData();
-    }
 });
-
-async function loadChartData() {
-    const chart = document.getElementById('chart');
-    const chartInfo = document.getElementById('chartInfo');
-    if (!chart) return;
-    
-    const response = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
-    const data = await response.json();
-    const currentRate = data.Valute && data.Valute.TJS ? data.Valute.TJS.Value : 9.0;
-    
-    const rates = [];
-    const today = new Date();
-    for (let i = 29; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-        const variation = (Math.random() - 0.5) * 0.5;
-        rates.push({
-            fullDateString: date.toLocaleDateString('ru-RU'),
-            rate: currentRate + variation
-        });
-    }
-    
-    chart.innerHTML = '';
-    const minRate = Math.min(...rates.map(d => d.rate)) * 0.98;
-    const maxRate = Math.max(...rates.map(d => d.rate)) * 1.02;
-    
-    rates.forEach(item => {
-        const bar = document.createElement('div');
-        bar.className = 'chart-bar';
-        bar.style.height = `${Math.max(((item.rate - minRate) / (maxRate - minRate)) * 100, 5)}%`;
-        bar.dataset.date = item.fullDateString;
-        bar.dataset.rate = item.rate.toFixed(4);
-        
-        bar.addEventListener('click', function() {
-            document.querySelectorAll('.chart-bar').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            if (chartInfo) {
-                chartInfo.innerHTML = `<b>Дата:</b> ${item.fullDateString}<br><b>1 TJS =</b> ${item.rate.toFixed(4)} RUB<br><b>1 RUB =</b> ${(1 / item.rate).toFixed(4)} TJS`;
-            }
-        });
-        
-        bar.addEventListener('mouseenter', function() {
-            if (chartInfo) {
-                chartInfo.innerHTML = `<b>Дата:</b> ${item.fullDateString}<br><b>1 TJS =</b> ${item.rate.toFixed(4)} RUB<br><b>1 RUB =</b> ${(1 / item.rate).toFixed(4)} TJS`;
-            }
-        });
-        
-        chart.appendChild(bar);
-    });
-    
-    if (rates.length > 0 && chartInfo) {
-        const last = rates[rates.length - 1];
-        chartInfo.innerHTML = `<b>Дата:</b> ${last.fullDateString}<br><b>1 TJS =</b> ${last.rate.toFixed(4)} RUB<br><b>1 RUB =</b> ${(1 / last.rate).toFixed(4)} TJS`;
-    }
-}

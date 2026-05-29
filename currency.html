@@ -6,6 +6,7 @@
     <title>Курс валют - ПАО «МОСТОТРЕСТ»</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://www.cbr-xml-daily.ru/money.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="hamburger-menu">
@@ -31,7 +32,7 @@
         <h1 class="page-title">Курс валют</h1>
 
         <div class="calculator">
-            <h2 class="calc-title">Калькулятор: Рубли -> Таджикский сомони</h2>
+            <h2 class="calc-title">Калькулятор: Рубли <-> Таджикский сомони</h2>
             
             <div class="calc-row">
                 <label for="fromCurrency">Из валюты:</label>
@@ -61,11 +62,9 @@
 
         <div class="chart-container">
             <h2 class="chart-title">Динамика курса TJS/RUB за последний месяц</h2>
-            <div class="chart" id="chart">
-                <p style="text-align: center; padding: 50px; color: #666;">Загрузка данных...</p>
-            </div>
-            <div class="chart-info" id="chartInfo">
-                Нажмите на столбец, чтобы увидеть курс на конкретную дату
+            <canvas id="rateChart"></canvas>
+            <div class="chart-info" id="clickInfo">
+                Нажмите на точку графика, чтобы увидеть курс на конкретную дату
             </div>
         </div>
     </main>
