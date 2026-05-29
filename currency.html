@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курс валют - ПАО «МОСТОТРЕСТ»</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.cbr-xml-daily.ru/money.js"></script>
+</head>
+<body>
+    <div class="hamburger-menu">
+        <div class="hamburger-icon" id="hamburgerIcon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav class="menu-panel" id="menuPanel">
+            <ul class="menu-list">
+                <li><a href="index.html" class="menu-link">О компании</a></li>
+                <li><a href="news.html" class="menu-link">Новости</a></li>
+                <li><a href="currency.html" class="menu-link active">Курс валют</a></li>
+                <li><a href="contacts.html" class="menu-link">Контакты</a></li>
+                <li><a href="video.html" class="menu-link">Видео</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+        <h1 class="page-title">Курс валют</h1>
+
+        <div class="calculator">
+            <h2 class="calc-title">Калькулятор: Рубли -> Таджикский сомони</h2>
+            
+            <div class="calc-row">
+                <label for="fromCurrency">Из валюты:</label>
+                <select id="fromCurrency">
+                    <option value="RUB">Российский рубль (RUB)</option>
+                    <option value="TJS">Таджикский сомони (TJS)</option>
+                </select>
+            </div>
+
+            <div class="calc-row">
+                <label for="toCurrency">В валюту:</label>
+                <select id="toCurrency">
+                    <option value="TJS">Таджикский сомони (TJS)</option>
+                    <option value="RUB">Российский рубль (RUB)</option>
+                </select>
+            </div>
+
+            <div class="calc-row">
+                <label for="amount">Сумма:</label>
+                <input type="number" id="amount" placeholder="Введите сумму" value="1" min="0" step="0.01">
+            </div>
+
+            <div class="calc-result" id="result">
+                Загрузка курса...
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">Динамика курса TJS/RUB за последний месяц</h2>
+            <div class="chart" id="chart">
+                <p style="text-align: center; padding: 50px; color: #666;">Загрузка данных...</p>
+            </div>
+            <div class="chart-info" id="chartInfo">
+                Нажмите на столбец, чтобы увидеть курс на конкретную дату
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; Дашкевич Алексей. ФБИ-42, 2 курс, 2026</p>
+    </footer>
+
+    <a href="#" class="back-to-top">↑</a>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты - ПАО «МОСТОТРЕСТ»</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="hamburger-menu">
+        <div class="hamburger-icon" id="hamburgerIcon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav class="menu-panel" id="menuPanel">
+            <ul class="menu-list">
+                <li><a href="index.html" class="menu-link">О компании</a></li>
+                <li><a href="news.html" class="menu-link">Новости</a></li>
+                <li><a href="currency.html" class="menu-link">Курс валют</a></li>
+                <li><a href="contacts.html" class="menu-link active">Контакты</a></li>
+                <li><a href="video.html" class="menu-link">Видео</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+        <h1 class="page-title">Контактная информация</h1>
+
+        <div class="contacts-info">
+            <div class="contact-item">
+                <h3>Адрес</h3>
+                <p>Россия, 121087, г. Москва, ул. Барклая, д. 6, стр. 5</p>
+            </div>
+
+            <div class="contact-item">
+                <h3>Телефоны</h3>
+                <p><b>Телефон:</b> <a href="tel:+74956697999">+7 (495) 669-79-99</a></p>
+                <p><b>Факс:</b> <a href="tel:+74956697711">+7 (495) 669-77-11</a></p>
+            </div>
+
+            <div class="contact-item">
+                <h3>Email</h3>
+                <p><b>Email:</b> <a href="mailto:pressa@mostro.ru">pressa@mostro.ru</a></p>
+            </div>
+
+            <div class="contact-item">
+                <h3>Сайт</h3>
+                <p><b>Web:</b> <a href="http://www.mostotrest.ru" target="_blank">www.mostotrest.ru</a></p>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <h2 style="color: #004d80; margin-bottom: 15px; text-align: center;">Мы на карте</h2>
+            
+            <iframe 
+                src="https://yandex.ru/map-widget/v1/?text=Россия,+121087,+г.+Москва,+ул.+Барклая,+д.+6,+стр.+5&z=16&lang=ru_RU" 
+                width="100%" 
+                height="400" 
+                frameborder="0" 
+                allowfullscreen="true">
+            </iframe>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; Дашкевич Алексей. ФБИ-42, 2 курс, 2026</p>
+    </footer>
+
+    <a href="#" class="back-to-top">↑</a>
+    <script src="script.js"></script>
+</body>
+</html>
